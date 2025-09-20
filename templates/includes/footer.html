@@ -1,0 +1,43 @@
+<footer class="tnx-footer py-5 mt-5">
+    <div class="container">
+        <div class="row gy-4">
+            <div class="col-md-5">
+                <h5 class="fw-semibold text-white d-flex align-items-center"><span class="logo-mark me-2"><i class="fa-solid fa-gears"></i></span>{{ settings.business_name }}</h5>
+                <p class="text-white-50 mb-4">{{ settings.footer_statement }}</p>
+                <div class="d-flex gap-3 text-white-50">
+                    {% if settings.contact_phone %}<span><i class="fa-solid fa-phone me-2"></i>{{ settings.contact_phone }}</span>{% endif %}
+                    {% if settings.contact_email %}<span><i class="fa-solid fa-envelope me-2"></i>{{ settings.contact_email }}</span>{% endif %}
+                </div>
+                {% if settings.whatsapp_link %}
+                <div class="mt-3">
+                    <a class="text-white" href="{{ settings.whatsapp_link }}" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp me-2"></i>WhatsApp Operations Desk</a>
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-md-3">
+                <h6 class="text-uppercase text-white-50">Navigation</h6>
+                <ul class="list-unstyled text-white-50">
+                    <li><a class="text-white-50" href="/">Home</a></li>
+                    <li><a class="text-white-50" href="{% url 'portal:machine_list' %}">Catalogue</a></li>
+                    <li><a class="text-white-50" href="{% url 'portal:custom_request' %}">Custom Request</a></li>
+                    <li><a class="text-white-50" href="/#services">Services</a></li>
+                    <li><a class="text-white-50" href="/#faqs">FAQs</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h6 class="text-uppercase text-white-50">Stay in sync</h6>
+                <p class="text-white-50">{{ settings.newsletter_blurb|default:'Get monthly insights on sourcing automation, uptime engineering, and capital procurement best practices.' }}</p>
+                <form class="newsletter-form" action="#" method="post" onsubmit="event.preventDefault(); alert('Subscribed! Our team will get in touch shortly.');">
+                    <div class="input-group">
+                        <input type="email" class="form-control" placeholder="Corporate email" required>
+                        <button class="btn btn-gradient" type="submit">Join</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="border-top border-secondary mt-4 pt-4 d-flex flex-column flex-md-row justify-content-between align-items-center text-white-50 small">
+            <span>© <span data-current-year></span> {{ settings.business_name }}. All rights reserved.</span>
+            <span>Crafted by Titan Nexus Digital Engineering.</span>
+        </div>
+    </div>
+</footer>

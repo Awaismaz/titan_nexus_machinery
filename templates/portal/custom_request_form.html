@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Custom Machinery Request | Titan Nexus{% endblock %}
+
+{% block body %}
+{% include 'includes/navbar.html' %}
+<section class="custom-request-hero py-5">
+    <div class="container">
+        <div class="row gy-4">
+            <div class="col-lg-6">
+                <h1 class="fw-bold">Tailor-made machinery sourcing</h1>
+                <p class="lead text-white-50">Provide your operational envelope and we will deploy a curated shortlist backed by engineering validation, commercial benchmarking, and localized support plans.</p>
+                <ul class="text-white-50 checklist">
+                    <li><i class="fa-solid fa-check"></i>Technical diligence with compliance-ready documentation</li>
+                    <li><i class="fa-solid fa-check"></i>Logistics, installation, and commissioning support across regions</li>
+                    <li><i class="fa-solid fa-check"></i>Financing options and service-level guarantees</li>
+                </ul>
+            </div>
+            <div class="col-lg-5 ms-lg-auto">
+                <div class="card shadow-lg">
+                    <div class="card-body">
+                        <h5 class="card-title">Share your requirements</h5>
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {{ form|crispy }}
+                            <button class="btn btn-gradient w-100" type="submit">Submit requirement</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="py-5">
+    <div class="container">
+        <div class="row gy-4">
+            <div class="col-md-4">
+                <div class="info-card">
+                    <i class="fa-solid fa-bolt"></i>
+                    <h5>Rapid response</h5>
+                    <p class="text-white-50">Average turn-around on RFQs is under 24 hours with comparative specs and commercials.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="info-card">
+                    <i class="fa-solid fa-globe"></i>
+                    <h5>Global vendor graph</h5>
+                    <p class="text-white-50">OEM partners across Asia, Europe, and North America vetted for ISO, CE, and industry-specific compliance.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="info-card">
+                    <i class="fa-solid fa-screwdriver-wrench"></i>
+                    <h5>Lifecycle assurance</h5>
+                    <p class="text-white-50">Commissioning engineers, spare strategy, and uptime monitoring to ensure sustained performance.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% include 'includes/footer.html' %}
+{% endblock %}

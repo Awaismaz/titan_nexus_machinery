@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ machine.name }} | Titan Nexus{% endblock %}
+
+{% block body %}
+{% include 'includes/navbar.html' %}
+<section class="machine-hero py-5">
+    <div class="container">
+        <div class="row gy-4">
+            <div class="col-lg-6">
+                <div class="machine-visual">
+                    {% if machine.hero_image %}
+                    <img src="{{ machine.hero_image.url }}" alt="{{ machine.name }}" class="img-fluid rounded-4">
+                    {% else %}
+                    <img src="{% static 'images/placeholder-machine.svg' %}" alt="{{ machine.name }}" class="img-fluid rounded-4">
+                    {% endif %}
+                </div>
+                <div class="gallery-strip mt-3">
+                    {% for image in machine.images.all %}
+                    <div class="gallery-thumb">
+                        <img src="{{ image.image.url }}" alt="{{ image.caption|default:machine.name }}">
+                    </div>
+                    {% empty %}
+                    <div class="text-white-50 small">Upload gallery images to enrich this view.</div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <span class="text-uppercase small text-white-50">{{ machine.category.name }}</span>
+                <h1 class="fw-bold">{{ machine.name }}</h1>
+                <p class="lead text-white-50">{{ machine.description }}</p>
+                <div class="machine-meta d-flex flex-wrap gap-3 mt-3">
+                    <span><i class="fa-solid fa-barcode me-2"></i>{{ machine.model_number|default:'Model on request' }}</span>
+                    <span><i class="fa-solid fa-industry me-2"></i>{{ machine.manufacturer|default:'Certified OEM partner' }}</span>
+                    <span><i class="fa-solid fa-truck-fast me-2"></i>Lead time {{ machine.lead_time_weeks }} weeks</span>
+                    <span><i class="fa-solid fa-shield-halved me-2"></i>{{ machine.warranty_months }} month warranty</span>
+                </div>
+                <div class="mt-4">
+                    <h5>Highlights</h5>
+                    <ul class="feature-list">
+                        {% if machine.key_features %}
+                            {% for line in machine.key_features.splitlines %}
+                                {% if line %}<li><i class="fa-solid fa-check text-gradient me-2"></i>{{ line }}</li>{% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <li class="text-white-50">Add newline-separated bullet points in the admin to surface headline features.</li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <div class="d-flex flex-column flex-sm-row gap-3 mt-4">
+                    <a class="btn btn-gradient flex-fill" href="{% url 'portal:custom_request' %}?machine={{ machine.slug }}"><i class="fa-solid fa-paper-plane me-2"></i>Request proposal</a>
+                    {% if machine.brochure %}
+                    <a class="btn btn-outline-light flex-fill" href="{{ machine.brochure.url }}" target="_blank" rel="noopener"><i class="fa-solid fa-file-arrow-down me-2"></i>Download brochure</a>
+                    {% endif %}
+                </div>
+                <div class="mt-4 text-white-50">
+                    <strong>Investment guide:</strong> {{ machine.from_price_display }} indicative · {% if machine.availability_status == 'in_stock' %}Ready to ship{% elif machine.availability_status == 'back_order' %}Fast track backorder{% else %}Custom engineered{% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="machine-specs py-5">
+    <div class="container">
+        <div class="row gy-5">
+            <div class="col-lg-8">
+                <h2 class="fw-bold">Technical snapshot</h2>
+                <div class="spec-grid">
+                    <div>
+                        <span class="spec-label">Power</span>
+                        <span class="spec-value">{{ machine.power_rating_kw|default:'On request' }} kW</span>
+                    </div>
+                    <div>
+                        <span class="spec-label">Throughput</span>
+                        <span class="spec-value">{{ machine.capacity_output|default:'Configured per application' }}</span>
+                    </div>
+                    <div>
+                        <span class="spec-label">Financing</span>
+                        <span class="spec-value">{% if machine.financing_available %}Available{% else %}Ask our advisors{% endif %}</span>
+                    </div>
+                    <div>
+                        <span class="spec-label">Availability</span>
+                        <span class="spec-value">{{ machine.get_availability_status_display }}</span>
+                    </div>
+                </div>
+                {% with docs=machine.documents.all %}
+                {% if docs %}
+                <div class="mt-4">
+                    <h5>Documents & certifications</h5>
+                    <ul class="list-group list-group-flush bg-transparent">
+                        {% for doc in docs %}
+                        <li class="list-group-item bg-transparent text-white-50 d-flex justify-content-between align-items-center">
+                            <span><i class="fa-solid fa-file-lines me-2"></i>{{ doc.label }}</span>
+                            <a class="btn btn-sm btn-outline-light" href="{{ doc.document.url }}" target="_blank" rel="noopener">Download</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+                {% endwith %}
+            </div>
+            <div class="col-lg-4">
+                <div class="card shadow-lg sticky-top custom-request-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Request tailored configuration</h5>
+                        <p class="text-white-50">Our engineering concierge will align duty cycle, utilities, and compliance to your spec.</p>
+                        <form method="post" action="{% url 'portal:landing_request' %}" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {{ custom_request_form|crispy }}
+                            <button class="btn btn-gradient w-100 mt-2" type="submit">Submit requirement</button>
+                        </form>
+                    </div>
+                </div>
+                {% if related_machines %}
+                <div class="mt-5">
+                    <h5>Complementary assets</h5>
+                    <ul class="list-unstyled">
+                        {% for item in related_machines %}
+                        <li class="related-item">
+                            <a href="{{ item.get_absolute_url }}">{{ item.name }}</a>
+                            <span class="text-white-50 small">{{ item.category.name }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% include 'includes/footer.html' %}
+{% endblock %}

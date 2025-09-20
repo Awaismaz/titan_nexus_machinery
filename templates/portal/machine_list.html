@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Catalogue | Titan Nexus{% endblock %}
+
+{% block body %}
+{% include 'includes/navbar.html' %}
+<section class="catalogue-hero py-5">
+    <div class="container">
+        <div class="row align-items-center gy-3">
+            <div class="col-lg-8">
+                <h1 class="fw-bold">Smart machinery catalogue</h1>
+                <p class="text-white-50 mb-0">Curated lineup of production assets ready for rapid deployment across process, discrete, and hybrid manufacturing operations.</p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a class="btn btn-gradient" href="{% url 'portal:custom_request' %}"><i class="fa-solid fa-lightbulb me-2"></i>Need a custom build?</a>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="catalogue-section pb-5">
+    <div class="container">
+        <form method="get" class="filter-form shadow-sm p-4 rounded-4 mb-4">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-4">{{ filter_form.search|as_crispy_field }}</div>
+                <div class="col-md-3">{{ filter_form.category|as_crispy_field }}</div>
+                <div class="col-md-3">{{ filter_form.industry|as_crispy_field }}</div>
+                <div class="col-md-2">{{ filter_form.availability|as_crispy_field }}</div>
+                <div class="col-md-2">{{ filter_form.financing|as_crispy_field }}</div>
+                <div class="col-md-2">{{ filter_form.power_min|as_crispy_field }}</div>
+                <div class="col-md-2">{{ filter_form.power_max|as_crispy_field }}</div>
+                <div class="col-md-2">
+                    <button class="btn btn-gradient w-100" type="submit"><i class="fa-solid fa-filter me-2"></i>Filter</button>
+                </div>
+                <div class="col-md-2">
+                    <a class="btn btn-outline-light w-100" href="{% url 'portal:machine_list' %}">Reset</a>
+                </div>
+            </div>
+        </form>
+        <div class="row gy-4">
+            {% for machine in machines %}
+            <div class="col-md-6 col-xl-4">
+                <div class="machine-card h-100">
+                    <div class="machine-image">
+                        {% if machine.hero_image %}
+                        <img src="{{ machine.hero_image.url }}" alt="{{ machine.name }}" class="img-fluid">
+                        {% else %}
+                        <img src="{% static 'images/placeholder-machine.svg' %}" alt="{{ machine.name }}" class="img-fluid">
+                        {% endif %}
+                        {% if machine.is_featured %}<span class="badge highlight">Featured</span>{% endif %}
+                        {% if machine.financing_available %}<span class="badge financing"><i class="fa-solid fa-coins me-1"></i>Financing</span>{% endif %}
+                    </div>
+                    <div class="machine-body">
+                        <span class="text-uppercase small text-white-50">{{ machine.category.name }}</span>
+                        <h5 class="mt-2"><a href="{{ machine.get_absolute_url }}">{{ machine.name }}</a></h5>
+                        <p class="text-white-50">{{ machine.short_description|truncatewords:22 }}</p>
+                        <ul class="spec-list">
+                            {% if machine.manufacturer %}<li><i class="fa-solid fa-industry me-2"></i>{{ machine.manufacturer }}</li>{% endif %}
+                            {% if machine.power_rating_kw %}<li><i class="fa-solid fa-bolt me-2"></i>{{ machine.power_rating_kw }} kW</li>{% endif %}
+                            {% if machine.capacity_output %}<li><i class="fa-solid fa-gauge-simple-high me-2"></i>{{ machine.capacity_output }}</li>{% endif %}
+                        </ul>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <span class="price-tag">{{ machine.from_price_display }}</span>
+                            <a class="btn btn-sm btn-outline-light" href="{{ machine.get_absolute_url }}">Specifications</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center text-white-50">
+                No machines match your filters. Submit a custom request and we will curate options for you.
+            </div>
+            {% endfor %}
+        </div>
+        <nav class="mt-4">
+            {% if is_paginated %}
+            <ul class="pagination justify-content-center pagination-dark">
+                {% if page_obj.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if querystring %}&{{ querystring }}{% endif %}"><i class="fa-solid fa-chevron-left"></i></a></li>
+                {% endif %}
+                {% for num in paginator.page_range %}
+                    {% if page_obj.number == num %}
+                    <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <li class="page-item"><a class="page-link" href="?page={{ num }}{% if querystring %}&{{ querystring }}{% endif %}">{{ num }}</a></li>
+                    {% endif %}
+                {% endfor %}
+                {% if page_obj.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}{% if querystring %}&{{ querystring }}{% endif %}"><i class="fa-solid fa-chevron-right"></i></a></li>
+                {% endif %}
+            </ul>
+            {% endif %}
+        </nav>
+    </div>
+</section>
+<section class="cta-section py-5">
+    <div class="container">
+        <div class="row align-items-center gy-4">
+            <div class="col-lg-8">
+                <h2 class="fw-bold">Need specs beyond the catalogue?</h2>
+                <p class="text-white-50">Our vendor intelligence desk will assemble a fit-for-purpose line-up from certified OEM partners.</p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a class="btn btn-gradient btn-lg" href="{% url 'portal:custom_request' %}"><i class="fa-solid fa-paper-plane me-2"></i>Submit custom requirement</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% include 'includes/footer.html' %}
+{% endblock %}

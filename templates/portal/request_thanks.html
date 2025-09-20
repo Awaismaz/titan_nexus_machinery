@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Request Received | Titan Nexus{% endblock %}
+{% block body %}
+{% include 'includes/navbar.html' %}
+<section class="thanks-section py-5">
+    <div class="container text-center">
+        <div class="thanks-card mx-auto">
+            <div class="icon-circle mb-4"><i class="fa-solid fa-circle-check"></i></div>
+            <h1 class="fw-bold">Request received!</h1>
+            <p class="lead text-white-50">Our procurement desk is compiling a tailored shortlist. Expect a response in under 24 hours with aligned specifications and commercial pathways.</p>
+            <div class="mt-4 d-flex flex-wrap justify-content-center gap-3">
+                <a class="btn btn-gradient" href="{% url 'portal:machine_list' %}"><i class="fa-solid fa-list me-2"></i>Continue exploring catalogue</a>
+                <a class="btn btn-outline-light" href="/">Back to home</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% include 'includes/footer.html' %}
+{% endblock %}

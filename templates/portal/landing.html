@@ -1,0 +1,323 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block body %}
+<header class="landing-wrapper">
+    {% include 'includes/navbar.html' %}
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center gy-5">
+                <div class="col-lg-6">
+                    <div class="hero-copy">
+                        <span class="badge rounded-pill text-uppercase">{{ settings.tagline }}</span>
+                        <h1 class="display-4 fw-bold mt-3">{{ settings.hero_title }}</h1>
+                        <p class="lead text-white-50">{{ settings.hero_subtitle }}</p>
+                        <div class="d-flex flex-wrap gap-3 mt-4">
+                            {% if settings.primary_cta_label %}
+                            <a class="btn btn-gradient btn-lg" href="{{ settings.primary_cta_link|default:'#featured' }}">{{ settings.primary_cta_label }}</a>
+                            {% endif %}
+                            {% if settings.secondary_cta_label %}
+                            <a class="btn btn-outline-light btn-lg" href="{{ settings.secondary_cta_link|default:'#custom-request' }}">{{ settings.secondary_cta_label }}</a>
+                            {% endif %}
+                        </div>
+                        <div class="metric-bar mt-5">
+                            {% for metric in metrics %}
+                            <div class="metric-item">
+                                {% if metric.icon %}<i class="{{ metric.icon }}"></i>{% endif %}
+                                <div>
+                                    <span class="metric-value">{{ metric.value }}</span>
+                                    <span class="metric-label">{{ metric.label }}</span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5 ms-lg-auto">
+                    <div class="card hero-form shadow-lg">
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">Fast-track your procurement brief</h5>
+                            <p class="text-white-50">Share the essentials and a sourcing strategist will respond within 24 hours.</p>
+                            <form method="post" action="{% url 'portal:landing_request' %}" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="row g-3">
+                                    <div class="col-md-6">{{ custom_request_form.contact_name|as_crispy_field }}</div>
+                                    <div class="col-md-6">{{ custom_request_form.company_name|as_crispy_field }}</div>
+                                    <div class="col-md-6">{{ custom_request_form.email|as_crispy_field }}</div>
+                                    <div class="col-md-6">{{ custom_request_form.phone|as_crispy_field }}</div>
+                                    <div class="col-12">{{ custom_request_form.machine_type|as_crispy_field }}</div>
+                                    <div class="col-12">{{ custom_request_form.description|as_crispy_field }}</div>
+                                    <div class="col-md-6">{{ custom_request_form.deployment_timeline|as_crispy_field }}</div>
+                                    <div class="col-md-6">{{ custom_request_form.industry|as_crispy_field }}</div>
+                                    <div class="col-md-6">{{ custom_request_form.capacity_requirement|as_crispy_field }}</div>
+                                    <div class="col-md-6">{{ custom_request_form.preferred_contact_method|as_crispy_field }}</div>
+                                    <div class="col-md-6">{{ custom_request_form.budget_min|as_crispy_field }}</div>
+                                    <div class="col-md-6">{{ custom_request_form.budget_max|as_crispy_field }}</div>
+                                    <div class="col-md-6">{{ custom_request_form.currency|as_crispy_field }}</div>
+                                    <div class="col-md-6">{{ custom_request_form.project_location|as_crispy_field }}</div>
+                                    <div class="col-12">{{ custom_request_form.attachment|as_crispy_field }}</div>
+                                </div>
+                                <button class="btn btn-gradient w-100 mt-3" type="submit"><i class="fa-solid fa-paper-plane me-2"></i>Submit Request</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% if settings.hero_background %}
+        <div class="hero-bg" style="background-image: url('{{ settings.hero_background.url }}');"></div>
+        {% endif %}
+    </section>
+</header>
+
+<section id="about" class="py-5 about-section">
+    <div class="container">
+        <div class="row align-items-center gy-4">
+            <div class="col-lg-6">
+                <h2 class="fw-bold">{{ settings.about_title }}</h2>
+                <p class="lead text-white-50">{{ settings.about_body }}</p>
+                <div class="d-flex flex-wrap gap-4 mt-4">
+                    <div>
+                        <span class="d-block h2 text-gradient">{{ settings.experience_years }}+</span>
+                        <small class="text-white-50">Years orchestrating turnkey installations</small>
+                    </div>
+                    <div>
+                        <span class="d-block h2 text-gradient">{{ settings.machines_deployed }}+</span>
+                        <small class="text-white-50">Machines deployed globally</small>
+                    </div>
+                    <div>
+                        <span class="d-block h2 text-gradient">{{ settings.uptime_commitment }}</span>
+                        <small class="text-white-50">Operational reliability commitment</small>
+                    </div>
+                </div>
+                <p class="mt-4 text-white-50">{{ settings.experience_highlight }}</p>
+            </div>
+            <div class="col-lg-5 ms-lg-auto">
+                <div class="service-stack">
+                    {% for service in services %}
+                    <div class="service-card">
+                        {% if service.icon %}<i class="{{ service.icon }}"></i>{% endif %}
+                        <div>
+                            <h5>{{ service.title }}</h5>
+                            <p class="mb-0">{{ service.description }}</p>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="text-white-50">Add service offerings from the admin portal to highlight your differentiators.</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="featured" class="py-5 featured-section">
+    <div class="container">
+        <div class="section-header d-flex justify-content-between align-items-center">
+            <div>
+                <span class="section-kicker">Flagship Deployments</span>
+                <h2 class="fw-bold">Featured Machinery in the field</h2>
+            </div>
+            <a class="btn btn-outline-light" href="{% url 'portal:machine_list' %}">View full catalogue</a>
+        </div>
+        <div class="row gy-4 mt-1">
+            {% for machine in featured_machines %}
+            <div class="col-md-6 col-xl-4">
+                <div class="machine-card h-100">
+                    <div class="machine-image">
+                        {% if machine.hero_image %}
+                        <img src="{{ machine.hero_image.url }}" alt="{{ machine.name }}" class="img-fluid">
+                        {% else %}
+                        <img src="{% static 'images/placeholder-machine.svg' %}" alt="{{ machine.name }}" class="img-fluid">
+                        {% endif %}
+                        {% if machine.highlight_text %}
+                        <span class="badge highlight">{{ machine.highlight_text }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="machine-body">
+                        <span class="text-uppercase small text-white-50">{{ machine.category.name }}</span>
+                        <h5 class="mt-2">{{ machine.name }}</h5>
+                        <p class="text-white-50">{{ machine.short_description }}</p>
+                        <ul class="spec-list">
+                            {% if machine.model_number %}<li><i class="fa-solid fa-barcode me-2"></i>{{ machine.model_number }}</li>{% endif %}
+                            {% if machine.manufacturer %}<li><i class="fa-solid fa-industry me-2"></i>{{ machine.manufacturer }}</li>{% endif %}
+                            {% if machine.capacity_output %}<li><i class="fa-solid fa-gauge-high me-2"></i>{{ machine.capacity_output }}</li>{% endif %}
+                            <li><i class="fa-solid fa-clock me-2"></i>Lead time: {{ machine.lead_time_weeks }} weeks</li>
+                        </ul>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <span class="price-tag">{{ machine.from_price_display }}</span>
+                            <a class="btn btn-sm btn-gradient" href="{{ machine.get_absolute_url }}">View details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center text-white-50">
+                Add featured machines in the admin panel to showcase them here.
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section id="industries" class="py-5 industries-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="section-kicker">Industries we empower</span>
+            <h2 class="fw-bold">Cross-sector sourcing intelligence</h2>
+        </div>
+        <div class="row gy-4">
+            {% for industry in industries %}
+            <div class="col-md-6 col-lg-4">
+                <div class="industry-card h-100">
+                    {% if industry.icon %}<i class="{{ industry.icon }} icon-pill"></i>{% endif %}
+                    <h5>{{ industry.name }}</h5>
+                    <p class="text-white-50">{{ industry.description }}</p>
+                    {% if industry.feature_statement %}<span class="text-gradient small">{{ industry.feature_statement }}</span>{% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center text-white-50">Create industry focus areas from the admin to personalise this grid.</div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="py-5 why-section">
+    <div class="container">
+        <div class="row gy-4 align-items-center">
+            <div class="col-lg-5">
+                <h2 class="fw-bold">Why procurement leaders trust Titan Nexus</h2>
+                <p class="text-white-50">We orchestrate the entire lifecycle – specification, vendor qualification, inspection, logistics, and commissioning – compressing lead times while de-risking capital investment.</p>
+            </div>
+            <div class="col-lg-7">
+                <div class="row g-4">
+                    {% for prop in value_props %}
+                    <div class="col-md-6">
+                        <div class="value-card h-100">
+                            {% if prop.icon %}<i class="{{ prop.icon }}"></i>{% endif %}
+                            <h5>{{ prop.title }}</h5>
+                            <p class="mb-0">{{ prop.description }}</p>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12 text-white-50">Add value propositions to highlight your differentiators.</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="testimonials" class="py-5 testimonials-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="section-kicker">Client Proof</span>
+            <h2 class="fw-bold">AI-generated testimonials from strategic partners</h2>
+        </div>
+        <div class="row gy-4">
+            {% for testimonial in testimonials %}
+            <div class="col-md-6 col-xl-4">
+                <div class="testimonial-card h-100">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="avatar me-3">
+                            {% if testimonial.avatar %}
+                            <img src="{{ testimonial.avatar.url }}" alt="{{ testimonial.client_name }}">
+                            {% else %}
+                            <span class="avatar-placeholder"><i class="fa-solid fa-user"></i></span>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <h6 class="mb-0">{{ testimonial.client_name }}</h6>
+                            <small class="text-white-50">{{ testimonial.client_role }} · {{ testimonial.company }}</small>
+                            {% if testimonial.industry %}<span class="badge bg-light text-dark ms-1">{{ testimonial.industry.name }}</span>{% endif %}
+                        </div>
+                    </div>
+                    <p class="text-white-50">“{{ testimonial.quote }}”</p>
+                    <div class="rating">
+                        {% for _ in '12345'|make_list %}
+                            {% if forloop.counter <= testimonial.rating %}
+                            <i class="fa-solid fa-star"></i>
+                            {% else %}
+                            <i class="fa-regular fa-star"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center text-white-50">Add client testimonials to showcase market validation.</div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="partners-section py-5">
+    <div class="container">
+        <div class="text-center mb-4">
+            <span class="section-kicker">Global OEM Ecosystem</span>
+            <h2 class="fw-bold">Trusted alliances powering every build</h2>
+        </div>
+        <div class="partner-strip">
+            {% for partner in partners %}
+            <div class="partner-item">
+                {% if partner.logo %}
+                <img src="{{ partner.logo.url }}" alt="{{ partner.name }}">
+                {% else %}
+                <span class="text-white-50">{{ partner.name }}</span>
+                {% endif %}
+            </div>
+            {% empty %}
+            <div class="text-white-50">Upload partner logos in the admin to highlight your network.</div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section id="faqs" class="faq-section py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-5 mb-4">
+                <span class="section-kicker">Procurement intelligence</span>
+                <h2 class="fw-bold">Frequently asked by operations leaders</h2>
+                <p class="text-white-50">From compliance-ready sourcing to commissioning support, we respond with data-backed answers. Add FAQs in the admin to tailor this knowledge base.</p>
+            </div>
+            <div class="col-lg-7">
+                <div class="accordion" id="faqAccordion">
+                    {% for faq in faqs %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="false" aria-controls="collapse{{ forloop.counter }}">
+                                {{ faq.question }}
+                            </button>
+                        </h2>
+                        <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-white-50">{{ faq.answer }}</div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="text-white-50">No FAQs yet. Add some from the admin console.</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cta-section py-5" id="custom-request">
+    <div class="container">
+        <div class="row align-items-center gy-4">
+            <div class="col-lg-8">
+                <h2 class="fw-bold">Ready for a tailored machinery shortlist?</h2>
+                <p class="text-white-50">Leverage our vetted supply base, real-time pricing intelligence, and on-ground commissioning specialists.</p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a class="btn btn-gradient btn-lg" href="{% url 'portal:custom_request' %}"><i class="fa-solid fa-handshake me-2"></i>Launch a request</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% include 'includes/footer.html' %}
+{% endblock %}
