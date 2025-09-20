@@ -5,8 +5,8 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-*1r7wm*vb3_66b6o6rd8tlfkl34oxn^0*b(mrxai+iwjaulb')
-DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() in {'1', 'true', 'yes'}
+SECRET_KEY = 'django-insecure-*1r7wm*vb3_66b6o6rd8tlfkl34oxn^0*b(mrxai+iwjaulb'
+DEBUG = False
 ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
